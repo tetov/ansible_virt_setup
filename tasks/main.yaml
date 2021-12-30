@@ -1,0 +1,27 @@
+---
+- block:
+    - name: Install tools
+      ansible.builtin.dnf:
+        name:
+          - "@virtualization"
+
+    - name: Start and enable libvirt
+      ansible.builtin.systemd:
+        name: libvirtd.service
+        state: started
+        enabled: true
+
+    - name: create system group
+      ansible.builtin.group:
+        name: libvirt
+        state: present
+        system: true
+
+    - name: add user to group
+      ansible.builtin.user:
+        name: "{{ libvirt_user }}"
+        groups:
+          - libvirt
+        append: true
+
+  become: true
